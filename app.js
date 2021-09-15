@@ -10,16 +10,6 @@ const app = express();
 //post ki chezein accept kr paye
 app.use(express.json());
 
-// app.get("/user",function(req,res){
-//     console.log("Thank you for making a request on our server");
-// });
-
-// yeh frontend se req aayi hai iske response mein res.send() bhej do
-app.get("/",function(req,res){
-    console.log("hello from home page");
-    res.send("<h1>Hello from Backend</h1>");
-});
-
 
 let users = {
 
@@ -29,50 +19,98 @@ let obj = {
     age:29
 }
 
+//mounting in express
+const router =  express.Router();
+app.use('/api/user',router);
 
-//create
-app.post("/user",function(req,res){
+router.route("/")
+.get(getUser)
+.post(createUser)
+.patch(updateUser)
+.delete(deleteUser);
+
+router.route("/:id").get(getUserById);
+
+
+function createUser(req,res){
     console.log("req.data",req.body);
     users = req.body;
     // res.status(200).json(req.body);
     res.status(200).send("data received and user added");
-});
+}
 
-//getting data from server
-//get/read
-app.get("/user",function(req,res){
+
+
+function getUser(req,res){
     console.log("users");
     // for sending ke val pairs to frontend
     res.json(users);
-});
+}
+//getting data from server
+
 
 
 //giving data to server
 
-
-//patch is update
-app.patch("/user",function(req,res){
+function updateUser(req,res){
     let obj = req.body;
     for(let key in obj){
         users[key] = obj[key]
     }
     res.status(200).json(users);
-});
+}
 
-//delete
-app.delete("/user",function(req,res){
+
+
+
+
+function deleteUser(req,res){
     users = {};
     res.status(200).json(users);
-});
+}
 
+// yeh likhne ki zarurat nhi hai jav express.router("/route").get().post().etc(); likh diya toh
+////////////////////////////////////////////
+// // create                                  //
+// app.post("/api/user",createUser);         //
+// //get/read                                //
+// app.get("/api/user",getUser);             //
+// //patch is update                         //
+// app.patch("/api/user",updateUser);        // 
+// //delete                                  //
+// app.delete("/api/user",deleteUser);       //
+// /////////////////////////////////////////
 
 // multiple routes
 //inko bolte hain template routes
-app.get("/user/:id",function(req,res){
+function getUserById(req,res){
     console.log(req.params);
     res.status(200).send("Apka data");
-})
+}
+app.get("/api/user/:id",getUserById) //////////////////
 
 app.listen(8080,function(){
     console.log("server started");
 })
+
+// ====================REST API===================//
+// 1=>no matter from where an API requested the result should be same
+ //mtlb-> chahe ios,wind,android, se req maari ho result same hi hoga hmesha
+
+//  2=>Routes should be on the basis of resources/nouns/entites
+//  jaise flipkart ke routes filpkart/products/furniture/table/tb-21
+
+
+// 3=>HTTP method should be used for doing operations on the resources
+// getUsers=> app.get("/users")
+// getUsers=> app.post("/users")
+// getUsers=> app.patch("/users")
+// getUsers=> app.delete("/users")
+
+
+// 4=> ReST API always gives the result in JSON Format
+// fact
+
+// 5=> REST API ARE STATELESS
+// FACT
+// ========================================================
