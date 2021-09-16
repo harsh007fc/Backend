@@ -76,9 +76,16 @@ UserRouter.route("/")
 UserRouter.route("/:id").get(getUserById);
 
 
-AuthRouter.post("/signup",signUpUser).post("/login",loginUser);
+AuthRouter.post("/signup",setCreatedAt,signUpUser).post("/login",loginUser);
 
-
+//middle ware hai yeh  
+function setCreatedAt(req,res,next ){
+    req.body.createdAt = new Date().toISOString();
+    // return res.json({
+    //     text:"Bye Bro",
+    // })
+    next();
+}
 
 function getUserById(req,res){
     console.log(req.params);
