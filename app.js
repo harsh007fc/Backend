@@ -10,6 +10,8 @@ const app = express();
 //post ki chezein accept kr paye
 app.use(express.json());
 
+// post accept-> folder designate
+app.use(express.static('public'))
 
 let users = {
 
@@ -20,17 +22,23 @@ let obj = {
 }
 
 //mounting in express
-const router =  express.Router();
-app.use('/api/user',router);
+const UserRouter =  express.Router();
+const AuthRouter =  express.Router();
+app.use('/api/user',UserRouter);
+app.use('/api/auth',UserRouter);
 
-router.route("/")
+UserRouter.route("/")
 .get(getUser)
 .post(createUser)
 .patch(updateUser)
 .delete(deleteUser);
 
-router.route("/:id").get(getUserById);
+UserRouter.route("/:id").get(getUserById);
 
+
+AuthRouter
+  .post("/signup",signUpUser)
+  .post("/login",loginUser);
 
 function createUser(req,res){
     console.log("req.data",req.body);
@@ -39,8 +47,16 @@ function createUser(req,res){
     res.status(200).send("data received and user added");
 }
 
+function signUpUser(req,res){
+    //email/username/pass bnao
+    
+}
 
 
+function loginUser(req,res){
+    //email/username/pass bnao
+    
+}
 function getUser(req,res){
     console.log("users");
     // for sending ke val pairs to frontend
