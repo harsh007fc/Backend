@@ -17,15 +17,55 @@ let users = {
 
 };
 let obj = {
-    name:"harshit",
+    name:"Aryan",
     age:29
+}
+
+let user = [];
+//database hai user actual mein
+function createUser(req,res){
+    console.log("req.data",req.body);
+    users = req.body;
+    res.status(200).send("data received and user added");
+}
+
+function signUpUser(req,res){
+    //email/username/pass bnao
+    let {email,name,password} = req.body;
+    console.log("USER",req.body);
+    user.push({email,name,password});
+
+    res.status(200).json({
+        message:"user careated",
+        createdUser:req.body,
+    })
+    
+}
+function loginUser(req,res){
+    //email/pass check 
+    //return res
+}
+function getUser(req,res){
+    console.log("users");
+    res.json(users);
+}
+function updateUser(req,res){
+    let obj = req.body;
+    for(let key in obj){
+        users[key] = obj[key]
+    }
+    res.status(200).json(users);
+}
+function deleteUser(req,res){
+    users = {};
+    res.status(200).json(users);
 }
 
 //mounting in express
 const UserRouter =  express.Router();
 const AuthRouter =  express.Router();
 app.use('/api/user',UserRouter);
-app.use('/api/auth',UserRouter);
+app.use('/api/auth',AuthRouter);
 
 UserRouter.route("/")
 .get(getUser)
@@ -36,69 +76,10 @@ UserRouter.route("/")
 UserRouter.route("/:id").get(getUserById);
 
 
-AuthRouter
-  .post("/signup",signUpUser)
-  .post("/login",loginUser);
-
-function createUser(req,res){
-    console.log("req.data",req.body);
-    users = req.body;
-    // res.status(200).json(req.body);
-    res.status(200).send("data received and user added");
-}
-
-function signUpUser(req,res){
-    //email/username/pass bnao
-    
-}
-
-
-function loginUser(req,res){
-    //email/username/pass bnao
-    
-}
-function getUser(req,res){
-    console.log("users");
-    // for sending ke val pairs to frontend
-    res.json(users);
-}
-//getting data from server
+AuthRouter.post("/signup",signUpUser).post("/login",loginUser);
 
 
 
-//giving data to server
-
-function updateUser(req,res){
-    let obj = req.body;
-    for(let key in obj){
-        users[key] = obj[key]
-    }
-    res.status(200).json(users);
-}
-
-
-
-
-
-function deleteUser(req,res){
-    users = {};
-    res.status(200).json(users);
-}
-
-// yeh likhne ki zarurat nhi hai jav express.router("/route").get().post().etc(); likh diya toh
-////////////////////////////////////////////
-// // create                                  //
-// app.post("/api/user",createUser);         //
-// //get/read                                //
-// app.get("/api/user",getUser);             //
-// //patch is update                         //
-// app.patch("/api/user",updateUser);        // 
-// //delete                                  //
-// app.delete("/api/user",deleteUser);       //
-// /////////////////////////////////////////
-
-// multiple routes
-//inko bolte hain template routes
 function getUserById(req,res){
     console.log(req.params);
     res.status(200).send("Apka data");
