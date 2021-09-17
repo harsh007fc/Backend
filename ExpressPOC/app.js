@@ -30,6 +30,17 @@ app.use(logger);
 
 app.get('/api/users',(req,res)=> res.json(users));
 
+app.get('/api/users/:id',(req,res)=>{
+    let found = users.some(user=> user.id === parseInt(req.params.id));
+    if(found){
+        res.send(users.filter(user=>user.id === parseInt(req.params.id)));
+        // res.send(req.params.id);
+
+    }else{
+        res.status(400).json({msg:"No member found with this id"})
+    }
+});
+
 //set port
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server Started at ${PORT}`));
